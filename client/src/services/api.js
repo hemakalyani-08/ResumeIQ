@@ -27,19 +27,94 @@ apiClient.interceptors.request.use(
   }
 );
 
-const extractErrorMessage = (error) => {
-  const data = error?.response?.data;
-
-  if (typeof data === "string") return data;
-  if (data?.message) return data.message;
-  if (data?.error) {
-    return typeof data.error === "string"
-      ? data.error
-      : data.error?.message || "An API connection error occurred.";
+export const extractErrorMessage = (error) => {
+  // If the error itself is null or undefined
+  if (!error) {
+    return "An unknown error occurred. Please try again.";
   }
-  if (error?.message) return error.message;
 
-  return "An API connection error occurred.";
+  // If the error is already a string
+  if (typeof error === "string") {
+    return error;
+  }
+
+  // Handle Axios response errors
+  if (error.response) {
+    const status = error.response.status;
+    const data = error.response.data;
+
+    // Check specific HTTP status codes first for helpful fallback messages
+    let statusFallback = "";
+    if (status === 400) statusFallback = "Invalid request. Please check the uploaded data.";
+    else if (status === 401) statusFallback = "Unauthorized. Please authenticate and try again.";
+    else if (status === 403) statusFallback = "Access denied. You do not have permission for this resource.";
+    else if (status === 404) statusFallback = "Requested resource was not found on the server.";
+    else if (status === 413) statusFallback = "File is too large. Max allowed size is 5MB.";
+    else if (status === 429) statusFallback = "Rate limit exceeded. Please wait a moment before trying again.";
+    else if (status >= 500) statusFallback = "Internal server error. Our AI service is temporarily down.";
+
+    if (data) {
+      // 1. If data is a string
+      if (typeof data === "string" && data.trim().length > 0) {
+        return data;
+      }
+      // 2. error.response.data.message
+      if (data.message && typeof data.message === "string" && data.message.trim().length > 0) {
+        return data.message;
+      }
+      // 3. error.response.data.error
+      if (data.error) {
+        if (typeof data.error === "string" && data.error.trim().length > 0) {
+          return data.error;
+        }
+        if (data.error.message && typeof data.error.message === "string" && data.error.message.trim().length > 0) {
+          return data.error.message;
+        }
+      }
+      // 4. error.response.data.detail
+      if (data.detail && typeof data.detail === "string" && data.detail.trim().length > 0) {
+        return data.detail;
+      }
+      // 5. Nested objects or empty objects in response data
+      if (typeof data === "object" && Object.keys(data).length > 0) {
+        // Try searching for any value inside the object that is a string
+        for (const key of Object.keys(data)) {
+          if (typeof data[key] === "string" && data[key].trim().length > 0) {
+            return data[key];
+          }
+          if (data[key] && typeof data[key] === "object") {
+            const nested = data[key];
+            if (nested.message && typeof nested.message === "string") return nested.message;
+            if (nested.error && typeof nested.error === "string") return nested.error;
+          }
+        }
+      }
+    }
+
+    // Return status fallback if defined, else generic message
+    return statusFallback || `Request failed with status code ${status}.`;
+  }
+
+  // Handle standard Error instances or custom objects with message properties
+  if (error.message && typeof error.message === "string" && error.message.trim().length > 0) {
+    if (error.message === "[object Object]" || error.message === "{}") {
+      return "Resume scan failed. Please try again.";
+    }
+    return error.message;
+  }
+
+  // Handle Firebase or custom error code/description properties
+  if (error.code && typeof error.code === "string") {
+    return `Error code: ${error.code}`;
+  }
+
+  // Network/Connection errors (Axios throws these when server is offline or unreachable)
+  if (error.request) {
+    return "Unable to connect to the server. Please verify the backend is running.";
+  }
+
+  // Final generic fallback
+  return "Resume scan failed. Please try again.";
 };
 
 // Axios Response Interceptor: Format errors cleanly
@@ -60,10 +135,7 @@ apiClient.interceptors.response.use(
         message: error.message
       });
     }
-    const message = extractErrorMessage(error);
-    const readableMessage = typeof message === "string"
-      ? message
-      : (message?.message || JSON.stringify(message) || "An API connection error occurred.");
+    const readableMessage = extractErrorMessage(error);
     return Promise.reject(new Error(readableMessage));
   }
 );

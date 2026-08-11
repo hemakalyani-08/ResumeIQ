@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAnalysis } from "../context/AnalysisContext";
-import { api } from "../services/api";
+import { api, extractErrorMessage } from "../services/api";
 import { 
   FiTrendingUp, 
   FiCpu, 
@@ -102,8 +102,8 @@ export default function ResumeImprovement() {
 
       setOptimizedText(res.optimized);
     } catch (err) {
-      const msg = err.message || err;
-      setError(typeof msg === "string" ? msg : (msg?.message || JSON.stringify(msg) || "Failed to generate optimization suggestion."));
+      console.error("Optimization failed:", err);
+      setError(extractErrorMessage(err));
     } finally {
       setLoading(false);
     }

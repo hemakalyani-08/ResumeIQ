@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAnalysis } from "../context/AnalysisContext";
 import { FiUploadCloud, FiFile, FiTrash2, FiAlignLeft, FiAlertCircle, FiTrendingUp } from "react-icons/fi";
+import { extractErrorMessage } from "../services/api";
 
 export default function Upload() {
   const { analyzeResume, isAnalyzing, analysisProgress, progressText } = useAnalysis();
@@ -69,8 +70,8 @@ export default function Upload() {
       await analyzeResume(file, jobDescription);
       navigate("/report");
     } catch (err) {
-      const msg = err.message || err;
-      setError(typeof msg === "string" ? msg : (msg?.message || JSON.stringify(msg) || "Failed to run resume analysis. Please try again."));
+      console.error("Resume analysis failed:", err);
+      setError(extractErrorMessage(err));
     }
   };
 
