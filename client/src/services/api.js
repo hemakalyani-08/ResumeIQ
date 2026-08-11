@@ -27,6 +27,21 @@ apiClient.interceptors.request.use(
   }
 );
 
+const extractErrorMessage = (error) => {
+  const data = error?.response?.data;
+
+  if (typeof data === "string") return data;
+  if (data?.message) return data.message;
+  if (data?.error) {
+    return typeof data.error === "string"
+      ? data.error
+      : data.error?.message || "An API connection error occurred.";
+  }
+  if (error?.message) return error.message;
+
+  return "An API connection error occurred.";
+};
+
 // Axios Response Interceptor: Format errors cleanly
 apiClient.interceptors.response.use(
   (response) => {
@@ -45,8 +60,11 @@ apiClient.interceptors.response.use(
         message: error.message
       });
     }
-    const message = error.response?.data?.error || "An API connection error occurred.";
-    return Promise.reject(new Error(message));
+    const message = extractErrorMessage(error);
+    const readableMessage = typeof message === "string"
+      ? message
+      : (message?.message || JSON.stringify(message) || "An API connection error occurred.");
+    return Promise.reject(new Error(readableMessage));
   }
 );
 

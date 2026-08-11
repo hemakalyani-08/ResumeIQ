@@ -69,7 +69,8 @@ export default function Upload() {
       await analyzeResume(file, jobDescription);
       navigate("/report");
     } catch (err) {
-      setError(err.message || "Failed to run resume analysis. Please try again.");
+      const msg = err.message || err;
+      setError(typeof msg === "string" ? msg : (msg?.message || JSON.stringify(msg) || "Failed to run resume analysis. Please try again."));
     }
   };
 

@@ -102,7 +102,8 @@ export default function ResumeImprovement() {
 
       setOptimizedText(res.optimized);
     } catch (err) {
-      setError(err.message || "Failed to generate optimization suggestion.");
+      const msg = err.message || err;
+      setError(typeof msg === "string" ? msg : (msg?.message || JSON.stringify(msg) || "Failed to generate optimization suggestion."));
     } finally {
       setLoading(false);
     }
