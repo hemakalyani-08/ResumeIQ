@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-950 text-dark-50 antialiased font-sans min-h-screen overflow-x-hidden;
+  }
+}
+
+/* Custom Webkit scrollbar for premium theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism custom classes */
+.glass-panel {
+  background: #ffffff;
+  border: 1px solid #C9DCCF;
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  background: #ffffff;
+  border-color: #5F9F7A;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
+  transform: translateY(-1px);
+}
+
+.glass-input {
+  background: #ffffff;
+  border: 1px solid #C9DCCF;
+  transition: all 0.2s ease-in-out;
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: #5F9F7A;
+  box-shadow: 0 0 0 2px rgba(95, 159, 122, 0.25);
+  background: #ffffff;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #5F9F7A 0%, #3F7658 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-indigo {
+  box-shadow: 0 15px 40px -10px rgba(95, 159, 122, 0.08);
+}
+
+.glow-brand {
+  box-shadow: 0 15px 50px -12px rgba(95, 159, 122, 0.1);
+}
+
+/* Print styles for professional report exports */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+  
+  /* Hide non-print utility overlays */
+  nav, 
+  aside, 
+  header, 
+  .no-print, 
+  button, 
+  a.no-print, 
+  .border-dark-800, 
+  .border-dark-850 {
+    display: none !important;
+  }
+
+  /* Remove dark panels backgrounds and expand to standard sheet margins */
+  .glass-panel, 
+  main, 
+  .main-content, 
+  .min-h-screen {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    color: #0f172a !important;
+  }
+
+  /* Force dark contrast typography */
+  h2, h3, h4, h5, h6, p, span, li, td, th {
+    color: #0f172a !important;
+  }
+
+  /* Retain grid layouts */
+  .grid {
+    display: grid !important;
+    gap: 16px !important;
+  }
+}
