@@ -148,7 +148,7 @@ export default function Dashboard() {
         <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-brand-500/5 rounded-full blur-[80px] pointer-events-none" />
         <div className="space-y-2">
           <h2 className="text-xl sm:text-2xl font-bold text-dark-100 tracking-tight">
-            {getGreeting()}, <span className="text-gradient font-extrabold">{getFirstName()}</span>!
+            {getGreeting()}!
           </h2>
           <p className="text-sm text-dark-400 max-w-xl leading-relaxed">
             Welcome to your career command center. Upload your resume or review the AI-suggested learning guides to start refining your credentials.
