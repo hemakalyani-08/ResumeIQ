@@ -107,30 +107,7 @@ export default function AppLayout({ children }) {
           })}
         </nav>
 
-        {/* User Info Footer */}
-        <div className="p-4 border-t border-dark-850 bg-dark-950/40">
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-dark-950/60 border border-dark-850">
-            {currentUser?.photoURL ? (
-              <img
-                src={currentUser.photoURL}
-                alt="Profile"
-                className="w-10 h-10 rounded-full border border-dark-700"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-200/20 border border-brand-500/30 flex items-center justify-center text-sm font-bold text-brand-300">
-                {getInitials(currentUser)}
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-dark-100 truncate">
-                {currentUser?.displayName || "Guest User"}
-              </p>
-              <p className="text-[10px] text-dark-550 truncate">
-                {currentUser?.email || "guest-session"}
-              </p>
-            </div>
-          </div>
-        </div>
+
       </aside>
 
       {/* Mobile Header Bar */}
@@ -206,21 +183,7 @@ export default function AppLayout({ children }) {
                   })}
                 </nav>
 
-                <div className="pt-6 border-t border-dark-800">
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-dark-900/40">
-                    <div className="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-sm font-bold text-brand-300">
-                      {getInitials(currentUser)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-dark-100 truncate">
-                        {currentUser?.displayName || "Guest User"}
-                      </p>
-                      <p className="text-[10px] text-dark-550 truncate">
-                        {currentUser?.email || "guest-session"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+
               </motion.aside>
             </>
           )}
